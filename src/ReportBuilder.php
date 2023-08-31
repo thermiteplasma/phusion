@@ -101,9 +101,8 @@ class ReportBuilder
         return $this;
     }
 
-    public function download()
+    public function download($path)
     {
-        $path = resource_path('templates/test.pdf');
         $this->pdf->Output($path, 'FD');
     }
 
