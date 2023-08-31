@@ -123,7 +123,6 @@ class ReportBuilder
 
     private function newPage()
     {
-        ray('NEW PAGE');
         $this->yAxis = $this->report->topMargin;
         $this->pageChanged = true;
         $this->currentPage++;
