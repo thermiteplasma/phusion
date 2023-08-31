@@ -48,8 +48,9 @@ class Dataset
     public function nextRow() {
         $this->currentRow++;
         
-        $this->rowData = $this->data[$this->currentRow];
-
+        if ($this->currentRow < count($this->data)) {
+            $this->rowData = $this->data[$this->currentRow];
+        }
     }
 
     public function valueFor($field)

@@ -101,9 +101,19 @@ class ReportBuilder
         return $this;
     }
 
-    public function download($path)
+    public function store($path)
     {
         $this->pdf->Output($path, 'FD');
+    }
+
+    public function download($name = 'report.pdf')
+    {
+        return response()->streamDownload(function () {
+            $this->pdf->Output('', 'S');
+        }, $name, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="'.$name.'"'
+        ]);
     }
 
     private function newPage()
