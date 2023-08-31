@@ -97,6 +97,8 @@ class ReportBuilder
 
         $this->drawColumnFooter();
         $this->drawPageFooter();
+
+        return $this;
     }
 
     public function download()
@@ -1066,9 +1068,10 @@ class ReportBuilder
         preg_match_all("/V{(\w+)}/", $expression, $variableMatches);
         if ($variableMatches) {
             foreach ($variableMatches[1] as $variableName) {
-                // $text = $this->getVariableValue($match, $text, $writeHTML, $element);
-                $variable = $this->report->mainDataset->variables[$variableName];
-                $text = $this->getVariableValue($variableName, $expression, $writeHTML);
+                $variable = $this->calculatedVariables[$variableName] ?? null;
+                if ($variable) {
+                    $text = $this->getVariableValue($variableName, $expression, $writeHTML);
+                }
             }
         }
         
