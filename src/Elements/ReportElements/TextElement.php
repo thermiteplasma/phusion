@@ -38,29 +38,16 @@ Class TextElement
 
     public function getTextAlignment()
     {
-        return match($this->textAlignment) {
-            "Center" => "C",
-            "Right" => "R",
-            default => "L",
-        };
+        return substr($this->textAlignment->value, 0, 1);
     }
 
     public function getVerticalAlignment($overflow = false)
     {
-        return match($this->verticalAlignment) {
-            "Middle" => "M",
-            "Bottom" => "B",
-            default => "T",
-        };
+        return substr($this->verticalAlignment->value, 0, 1);
     }
 
     public function rotationAngle(): int
     {
-        return match($this->rotation) {
-            "Left" => 90,
-            "Right" => 270,
-            "UpsideDown" => 180,
-            default => 0,
-        };
+        return $this->rotation->angle();
     }
 }
