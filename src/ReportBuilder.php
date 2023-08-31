@@ -37,7 +37,38 @@ class ReportBuilder
     //     'Group1' => ['value' => 'A', 'count' => 1]
     // ]
     
-    public function __construct(Report $report)
+    // public function __construct(Report $report)
+    // {
+    //     $this->report = $report;
+
+    //     $format = $this->report->getFormat();
+
+    //     $this->pdf = new TCPDF($this->report->orientation->tcpdfValue(), 'pt', $format, true);
+
+    //     $this->pdf->SetLeftMargin($this->report->leftMargin);
+    //     $this->pdf->SetRightMargin($this->report->rightMargin);
+    //     $this->pdf->SetTopMargin($this->report->topMargin);
+    //     $this->pdf->SetAutoPageBreak(true, $this->report->bottomMargin / 2);
+
+    //     $this->pdf->setPrintHeader(false);
+    //     $this->pdf->setPrintFooter(false);
+
+    //     $this->calculatedVariables['REPORT_COUNT'] = 0; //initialize to 0
+        
+    //     $this->newPage();
+
+    //     $this->drawTitle();
+
+    //     $this->drawPageHeader();
+    //     $this->drawColumnHeader();
+        
+    //     $this->drawDetail();
+
+    //     $this->drawColumnFooter();
+    //     $this->drawPageFooter();
+    // }
+
+    public function generate(Report $report)
     {
         $this->report = $report;
 
@@ -66,6 +97,12 @@ class ReportBuilder
 
         $this->drawColumnFooter();
         $this->drawPageFooter();
+    }
+
+    public function download()
+    {
+        $path = resource_path('templates/test.pdf');
+        $this->pdf->Output($path, 'FD');
     }
 
     private function newPage()

@@ -10,59 +10,236 @@ use Thermiteplasma\Phusion\Enums\PageOrientation;
 
 class Report
 {
+    /**
+     * The report name
+     *
+     * @var string
+     */
     public string $name = '';
 
+    /**
+     * The page width in px.
+     *
+     * @var int
+     */
     public int $pageWidth = 842;
     
+    /**
+     * The page height in px.
+     * 
+     * @var int
+     */
     public int $pageHeight = 595;
     
+    /**
+     * The page orientation. Landscape or Portrait.
+     * 
+     * @var PageOrientation
+     */
     public PageOrientation $orientation = PageOrientation::PORTRAIT;
     
+    /**
+     * The column width in px.
+     * 
+     * @var int
+     */
     public int $columnWidth = 802;
     
+    /**
+     * The left margin in px.
+     * 
+     * @var int
+     */
     public int $leftMargin = 20;
     
+
+    /**
+     * The right margin in px.
+     * 
+     * @var int
+     */
     public int $rightMargin = 20;
     
+
+    /**
+     * The top margin in px.
+     * 
+     * @var int
+     */
     public int $topMargin = 20;
     
+
+    /**
+     * The bottom margin in px.
+     * 
+     * @var int
+     */
     public int $bottomMargin = 20;
 
+    /**
+     * Should the title render on it's own page.
+     * 
+     * @var bool
+     */
     public bool $isTitleNewPage = false;
     
+    /**
+     * Should the summary render on it's own page.
+     * 
+     * @var bool
+     */
     public bool $isSummaryNewPage = false;
     
+    /**
+     * Should the summary render with the page header and footer.
+     * 
+     * @var bool
+     */
     public bool $isSummaryWithPageHeaderAndFooter = false;
     
+    /**
+     * Should the column footer float.
+     * 
+     * @var bool
+     */
     public bool $isFloatColumnFooter = false;
     
+    /**
+     * Should the pagination be ignored.
+     * 
+     * @var bool
+     */
     public bool $isIgnorePagination = false;
 
+    /**
+     * The print order. Vertical or Horizontal.
+     * 
+     * @var string
+     */
+    public string $printOrder = 'Vertical';
+
+    /**
+     * The column count.
+     * 
+     * @var int
+     */
+    public int $columnCount = 1;
+
+
+    /**
+     * The column spacing.
+     * 
+     * @var int
+     */
+    public int $columnSpacing = 0;
+
+
+    /**
+     * The report background.
+     * 
+     * @var Section
+     */
     public ?Section $background = null;
+    
+    /**
+     * The report title.
+     * 
+     * @var Section
+     */
     public ?Section $title = null;
+    
+
+    /**
+     * The report page header.
+     * 
+     * @var Section
+     */
     public ?Section $pageHeader = null;
+    
+
+    /**
+     * The report column header.
+     * 
+     * @var Section
+     */
     public ?Section $columnHeader = null;
+    
+
+    /**
+     * The report details.
+     * 
+     * @var Section[]
+     */
     public array $details = [];
+    
+    /**
+     * The report column footer.
+     * 
+     * @var Section
+     */
     public ?Section $columnFooter = null;
+    
+
+    /**
+     * The report page footer.
+     * 
+     * @var Section
+     */
     public ?Section $pageFooter = null;
+    
+
+    /**
+     * The report last page footer.
+     * 
+     * @var Section
+     */
     public ?Section $lastPageFooter = null;
 
-    // public $jrxml;
 
+    /**
+     * The report main dataset.
+     * 
+     * @var Dataset
+     */
     public ?Dataset $mainDataset = null;
 
+
+    /**
+     * The report styles.
+     * 
+     * @var Style[]
+     */
     public $styles = [];
 
-    public $template;
+
+    /**
+     * The report template.
+     * 
+     * @var string
+     */
+    protected $template = '';
+
+    /**
+     * Get the report template.
+     *
+     * @return string
+     */
+    protected function getTemplate() {
+        return $this->template;
+    }
+
 
     public function __construct() {
         
-        $jrxmlFile = $this->template;
+        $template = $this->getTemplate();
+        if (!$template) {
+            throw new Exception("Template not set!!");
+        }
         
         try {
-            $jrxmlData = file_get_contents($jrxmlFile);
+            $jrxmlData = file_get_contents($template);
         } catch (Exception $e) {
-            throw new Exception("File {$jrxmlFile} not found!!");
+            throw new Exception("File {$template} not found!!");
         }
         
         $keyword = "<queryString>
@@ -81,8 +258,11 @@ class Report
         $this->pageWidth = (int) $jrxml["pageWidth"];
         $this->pageHeight = (int) $jrxml["pageHeight"];
         $this->columnWidth = (int) $jrxml["columnWidth"];
-        // $this->columnCount = (int) $this->jrxml["columnCount"];
-        // $this->columnNumber = 1;
+        $this->columnCount = (int) $jrxml["columnCount"] ?? 1;
+        $this->columnSpacing = (int) $jrxml["columnSpacing"] ?? 0;
+        $this->printOrder = (string) $jrxml["printOrder"]; //Vertical / Horizontal;
+        
+        
         $this->leftMargin = (int) $jrxml["leftMargin"];
         $this->rightMargin = (int) $jrxml["rightMargin"];
         $this->topMargin = (int) $jrxml["topMargin"];
@@ -143,25 +323,26 @@ class Report
         ray('REPORT', $this);
     }
 
+
     public function mainDataset(): Dataset
     {
         return new Dataset([]);
     }
 
-    public function getStyle($key){
-        if(isset($this->styles["{$key}"])){
-            return $this->styles["{$key}"];
-        }
-    }
-   
-    public function generate()
-    {
-        $builder = new ReportBuilder($this);
-   
-        $path = resource_path('templates/test.pdf');
-        $builder->pdf->Output($path, 'FD');
-    }
 
+    // public function generate()
+    // {
+    //     $builder = new ReportBuilder($this);
+   
+    //     $path = resource_path('templates/test.pdf');
+    //     $builder->pdf->Output($path, 'FD');
+    // }
+
+    /**
+     * Get the page format.
+     * 
+     * @return array
+     */
     public function getFormat()
     {
         $format = [$this->pageWidth, $this->pageHeight];

@@ -18,5 +18,21 @@ class PhusionServiceProvider extends PackageServiceProvider
         $package
             ->name('phusion')
             ->hasConfigFile();
+        
+        $this->app->bind('phusion', function ($app) {
+            return new ReportBuilder();
+        });
+    }
+
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return [
+            'phusion',
+        ];
     }
 }

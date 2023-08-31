@@ -11,6 +11,7 @@ class Phusion extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return \Thermiteplasma\Phusion\Phusion::class;
+        return 'phusion';
+        // return \Thermiteplasma\Phusion\Phusion::class;
     }
 }
