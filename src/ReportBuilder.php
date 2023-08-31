@@ -116,6 +116,11 @@ class ReportBuilder
         ]);
     }
 
+    public function toString()
+    {
+        return $this->pdf->Output('', 'S');
+    }
+
     private function newPage()
     {
         ray('NEW PAGE');
