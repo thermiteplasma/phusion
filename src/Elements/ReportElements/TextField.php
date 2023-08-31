@@ -2,6 +2,9 @@
 
 namespace Thermiteplasma\Phusion\Elements\ReportElements;
 
+use Thermiteplasma\Phusion\Elements\Box;
+use Thermiteplasma\Phusion\Elements\ReportElements\TextElement;
+
 
 class TextField extends ReportElement
 {
