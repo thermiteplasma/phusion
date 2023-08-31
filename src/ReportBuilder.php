@@ -29,44 +29,9 @@ class ReportBuilder
 
     public $pageChanged = false;
 
-    public $calculatedVariables = []; //key value pairs
+    public $variables = [];
 
-    public $groupData = [];
-
-    // public $groupData = [
-    //     'Group1' => ['value' => 'A', 'count' => 1]
-    // ]
-    
-    // public function __construct(Report $report)
-    // {
-    //     $this->report = $report;
-
-    //     $format = $this->report->getFormat();
-
-    //     $this->pdf = new TCPDF($this->report->orientation->tcpdfValue(), 'pt', $format, true);
-
-    //     $this->pdf->SetLeftMargin($this->report->leftMargin);
-    //     $this->pdf->SetRightMargin($this->report->rightMargin);
-    //     $this->pdf->SetTopMargin($this->report->topMargin);
-    //     $this->pdf->SetAutoPageBreak(true, $this->report->bottomMargin / 2);
-
-    //     $this->pdf->setPrintHeader(false);
-    //     $this->pdf->setPrintFooter(false);
-
-    //     $this->calculatedVariables['REPORT_COUNT'] = 0; //initialize to 0
-        
-    //     $this->newPage();
-
-    //     $this->drawTitle();
-
-    //     $this->drawPageHeader();
-    //     $this->drawColumnHeader();
-        
-    //     $this->drawDetail();
-
-    //     $this->drawColumnFooter();
-    //     $this->drawPageFooter();
-    // }
+    public $groups = [];
 
     public function generate(Report $report)
     {
@@ -84,8 +49,8 @@ class ReportBuilder
         $this->pdf->setPrintHeader(false);
         $this->pdf->setPrintFooter(false);
 
-        $this->calculatedVariables['REPORT_COUNT'] = 0; //initialize to 0
-        
+        $this->variables['REPORT_COUNT'] = 0;
+
         $this->newPage();
 
         $this->drawTitle();
@@ -129,8 +94,8 @@ class ReportBuilder
         $this->pdf->AddPage();
         $this->pdf->setPage($this->currentPage, true);
 
-        $this->calculatedVariables['PAGE_NUMBER'] = $this->currentPage;
-        $this->calculatedVariables['PAGE_COUNT'] = 0;
+        $this->variables['PAGE_NUMBER'] = $this->currentPage;
+        $this->variables['PAGE_COUNT'] = 0;
 
         $this->drawBackground();
     }
@@ -223,18 +188,17 @@ class ReportBuilder
             foreach($this->report->mainDataset->groups as $groupName => $group) {
                 
                 $groupResult = $group->groupExpression->call($this, $this->report->mainDataset->rowData);
-                $currentGroupValue = $this->groupData[$groupName]['value'] ?? null;
+                
+                $currentGroupValue = $this->groups[$groupName]['value'] ?? null;
                 
                 // ray('GROUP ' . $groupName, $groupResult, $currentGroup);
 
                 if ($groupResult != $currentGroupValue) {
                     
-                    // ray('GROUP '. $groupName.' CHANGED ' . $groupResult);
-                    //we are starting a new group
-                    $this->groupData[$groupName]['value'] = $groupResult;
-                    $this->groupData[$groupName]['count'] = 1;
+                    $this->groups[$groupName]['value'] = $groupResult;
+                    $this->groups[$groupName]['count'] = 1;
 
-                    $this->calculatedVariables[$groupName . '_COUNT'] = $this->groupData[$groupName]['count'];
+                    $this->variables[$groupName . '_COUNT'] = $this->groups[$groupName]['count'];
                     
                     foreach($group->headers as $header) {
                         
@@ -247,28 +211,36 @@ class ReportBuilder
                         $this->setYAxis($header->height);
                     }
                 } else {
-                    // ray('INCREMENT GROUP COUNT');
-                    $this->groupData[$groupName]['count']++;// = $this->groupData[$groupName]['count'] + 1;
+                    ray('INCREMENT GROUP COUNT', $this->groups);
+                    $this->groups[$groupName]['count']++;
                 }
 
             }
 
-            foreach($this->groupData as $groupName => $group) {
-                $this->calculatedVariables[$groupName . '_COUNT'] = $group['count'];
+            foreach($this->groups as $groupName => $group) {
+                $this->variables[$groupName . '_COUNT'] = $group['count'];
             }
 
-            // ray($this->calculatedVariables);
-            // ray('for ' . $this->report->mainDataset->rowData['name'], $this->groupData);
         }
     }
 
     private function drawDetail()
     {
+        //init the groupData for each group
+        if ($this->report->mainDataset->groups) {
+            foreach($this->report->mainDataset->groups as $groupName => $group) {
+                $this->groups[$groupName] = [
+                    'value' => null,
+                    'count' => 0,
+                ];
+            }
+        }
+
         if (count($this->report->details) > 0) {
             
             for ($i=0; $i < count($this->report->mainDataset->data); $i++) { 
-                $this->calculatedVariables['REPORT_COUNT']++;
-                $this->calculatedVariables['PAGE_COUNT']++;
+                $this->variables['REPORT_COUNT']++;
+                $this->variables['PAGE_COUNT']++;
 
                 $headersDrawn = false;
                 $variablesCalculated = false;
@@ -319,23 +291,20 @@ class ReportBuilder
 
                 $groupResult = $group->groupExpression->call($this, $this->report->mainDataset->rowData);
                 
-                $currentGroup = $this->groupData[$groupName]['value'] ?? null;
+                $currentGroup = $this->groups[$groupName]['value'] ?? null;
                 // ray('GROUP', $groupResult, $currentGroup);
                 if ($groupResult != $currentGroup) {
                     //end of group
-                    
-                    // $this->calculatedVariables[$groupName . '_COUNT'] = 0;
-
-                    // $this->groupData[$groupName]['value'] = $groupResult;
-                    
                     foreach($group->footers as $footer) {
                         
                         if ($footer->splitType == SplitType::STRETCH || $footer->splitType == SplitType::PREVENT) {
                             $this->PreventY_axis($footer->height);
                         }
-    
+                        
+                        ray('DRAW GROUP FOOTER');
                         $this->generateSectionElements($footer);
-    
+                        ray('END DRAW GROUP FOOTER');
+
                         $this->setYAxis($footer->height);
 
                         //reset group variables
@@ -343,7 +312,7 @@ class ReportBuilder
 
                     foreach($this->report->mainDataset->variables as $variableName => $variable) {
                         if ($variable->resetType == ResetType::GROUP && $variable->resetGroup == $groupName) {
-                            $this->calculatedVariables[$variableName] = $variable->initialValue;
+                            $this->variables[$variableName] = $variable->initialValue;
                         }
                     }
 
@@ -1076,12 +1045,13 @@ class ReportBuilder
     // public function getExpression($text, $row, $writeHTML = null, $element = null) {
     public function getExpression($expression, $writeHTML = null) {
         
+        // ray($expression);
         $text = $expression;
 
         preg_match_all("/V{(\w+)}/", $expression, $variableMatches);
         if ($variableMatches) {
             foreach ($variableMatches[1] as $variableName) {
-                $variable = $this->calculatedVariables[$variableName] ?? null;
+                $variable = $this->variables[$variableName] ?? null;
                 if ($variable) {
                     $text = $this->getVariableValue($variableName, $expression, $writeHTML);
                 }
@@ -1105,8 +1075,7 @@ class ReportBuilder
 
     // public function getVariableValue($variable, $text, $htmlentities = false, $element = null) {
     public function getVariableValue(string $variableName, string $expression, $htmlentities = false) {
-        
-        $currentValue = $this->calculatedVariables[$variableName] ?? null;
+        $currentValue = $this->variables[$variableName] ?? null;
         return str_ireplace(array('$V{' . $variableName . '}'), [$currentValue], $expression);
     }
 
@@ -1124,8 +1093,6 @@ class ReportBuilder
             $this->variableCalculation($name, $variable);
         }
         
-        // ray('variable1 ' , $this->calculatedVariables['variable2']);
-
         if($this->pageChanged == true){
             $this->pageChanged = false;
         }
@@ -1134,7 +1101,7 @@ class ReportBuilder
     public function variableCalculation(string $name, Variable $variable) {
         // ray('calculate the value of ' . $name);
         
-        $currentValue = $this->calculatedVariables[$name] ?? null;
+        $currentValue = $this->variables[$name] ?? null;
         
         $result = $variable->variableExpression->call($this, $this->report->mainDataset->rowData);
         
@@ -1146,7 +1113,7 @@ class ReportBuilder
                 $value += is_numeric($currentValue) ? $currentValue : 0;
                 break;
             case VariableCalculation::AVERAGE:
-                $value = ($value * ($this->calculatedVariables['REPORT_COUNT'] - 1) + $currentValue) / $this->calculatedVariables['REPORT_COUNT'];
+                $value = ($value * ($this->variables['REPORT_COUNT'] - 1) + $currentValue) / $this->variables['REPORT_COUNT'];
                 $value = 0;
                 break;
             case VariableCalculation::DISTINCT_COUNT:
@@ -1171,7 +1138,7 @@ class ReportBuilder
                 $value = 0;
                 break;
             case VariableCalculation::COUNT:
-                $value = $this->calculatedVariables[$name];
+                $value = $this->variables[$name];
                 $value++;
                 
                 break;
@@ -1194,6 +1161,6 @@ class ReportBuilder
             }
         }
         
-        $this->calculatedVariables[$name] = $value;
+        $this->variables[$name] = $value;
     }
 }
