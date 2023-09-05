@@ -2,23 +2,31 @@
 
 namespace Thermiteplasma\Phusion\Elements\ReportElements;
 
-use Closure;
 use Thermiteplasma\Phusion\Elements\Box;
-use Thermiteplasma\Phusion\Elements\ReportElements\TextElement;
+use Thermiteplasma\Phusion\Elements\ElementConcerns\WithBox;
+use Thermiteplasma\Phusion\Elements\ElementConcerns\WithTextElement;
 
 class StaticText extends ReportElement
 {
-    public ?Box $box = null;
-    public TextElement $textElement;
-    
+    use WithBox;
+    use WithTextElement;
+
+
     public string $text;
 
-    public function __construct($element)
+    public static function make(): static
     {
-        $this->box = new Box($element->box);
-        $this->textElement = new TextElement($element->textElement);
+        $static = app(static::class);
+        return $static;
+    }
+
+    public function __construct($element = null)
+    {
+        $this->box = new Box($element?->box);
         
-        $this->text = (string) $element->text;
+        $this->setupTextElement($element?->textElement);
+        
+        $this->text = (string) $element?->text;
         
         parent::__construct($element);
     }
@@ -28,17 +36,4 @@ class StaticText extends ReportElement
         $this->text = $text;
         return $this;
     }
-
-    public function box(Box | Closure $box)
-    {
-        $this->box = $box;
-        return $this;
-    }
-
-    public function textElement(TextElement $textElement)
-    {
-        $this->textElement = $textElement;
-        return $this;
-    }
-    
 }

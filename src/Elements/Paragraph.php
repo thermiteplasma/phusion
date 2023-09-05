@@ -36,4 +36,52 @@ class Paragraph
             default => 1.0,
         };
     }
+
+    public function lineSpacing(string $lineSpacing): static
+    {
+        $this->lineSpacing = $lineSpacing;
+        return $this;
+    }
+
+    public function lineSpacingSize(float $lineSpacingSize): static
+    {
+        $this->lineSpacingSize = $lineSpacingSize;
+        return $this;
+    }
+
+    public function firstLineIndex(int $firstLineIndex): static
+    {
+        $this->firstLineIndex = $firstLineIndex;
+        return $this;
+    }
+
+    public function leftIndent(int $leftIndent): static
+    {
+        $this->leftIndent = $leftIndent;
+        return $this;
+    }
+
+    public function rightIndent(int $rightIndent): static
+    {
+        $this->rightIndent = $rightIndent;
+        return $this;
+    }
+
+    public function spacingBefore(int $spacingBefore): static
+    {
+        $this->spacingBefore = $spacingBefore;
+        return $this;
+    }
+
+    public function spacingAfter(int $spacingAfter): static
+    {
+        $this->spacingAfter = $spacingAfter;
+        return $this;
+    }
+
+    public function tabStopWidth(int $tabStopWidth): static
+    {
+        $this->tabStopWidth = $tabStopWidth;
+        return $this;
+    }
 }

@@ -13,9 +13,7 @@ class GraphicElement extends ReportElement
     {
         parent::__construct($element);
         
-        $graphicElement = $element->graphicElement ?? null;
-
-        $this->pen = new Pen($graphicElement->pen ?? null);
+        $this->pen = new Pen($element?->graphicElement?->pen);
     }
 
     public function pen(Pen | Closure $pen)

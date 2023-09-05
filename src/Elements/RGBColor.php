@@ -8,6 +8,12 @@ class RGBColor
     public int $green = 0;
     public int $blue = 0;
 
+    public static function make($hexColor): static
+    {
+        $static = app(static::class, ['hexColor' => $hexColor]);
+        return $static;
+    }
+
     public function __construct(string $hexColor) {
         
         $this->red = hexdec(substr($hexColor, 1, 2));

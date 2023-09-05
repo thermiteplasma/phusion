@@ -488,8 +488,8 @@ class ReportBuilder
             $stretchOverflow = false;
         }
 
-        $align = $staticText->textElement->getTextAlignment();
-        $valign = $staticText->textElement->getVerticalAlignment();
+        $align = $staticText->getTextAlignment();
+        $valign = $staticText->getVerticalAlignment();
 
         //we need to set rotation
         // if (isset($data->textElement["rotation"])) {
@@ -502,14 +502,14 @@ class ReportBuilder
         //     //$data->text=$data->textElement->font["pdfFontName"];//$this->recommendFont($data->text);
         //     $font = $this->recommendFont($data->text, $data->textElement->font["fontName"], $data->textElement->font["pdfFontName"]);
         // }
-        $fontsize = $staticText->textElement->font->size;
-        $fontstyle = $staticText->textElement->font->getFontStyleString();
+        $fontsize = $staticText->font->size;
+        $fontstyle = $staticText->font->getFontStyleString();
 
         // if (isset($data->reportElement["key"]) && !empty($data->reportElement["key"])) {
         //     $height = $fontsize * $this->adjust;
         // }
 
-        $lineHeightRatio = $staticText->textElement->paragraph->getLineHeightRatio();
+        $lineHeightRatio = $staticText->paragraph->getLineHeightRatio();
 
         $this->pdf->setCellHeightRatio($lineHeightRatio);
         
@@ -520,7 +520,7 @@ class ReportBuilder
         $this->pdf->setTextColor($textColor->red, $textColor->green, $textColor->blue);
         $this->pdf->setDrawColor(0, 0, 0); //What is this for
         $this->pdf->setFillColor($fillColor->red, $fillColor->green, $fillColor->blue);
-        $this->pdf->setFont($staticText->textElement->font->name, $fontstyle, $fontsize);
+        $this->pdf->setFont($staticText->font->name, $fontstyle, $fontsize);
 
         
         //CHECK OVERFLOW METHOD. THIS IS REUSABLE PER COMPONENT?
@@ -548,7 +548,7 @@ class ReportBuilder
         $rotated = false;
 
         //handle rotation
-        $angle = $staticText->textElement->rotationAngle();
+        $angle = $staticText->rotationAngle();
 
         if ($angle > 0) {
             $this->pdf->Rect($clipx, $clipy, $clipw, $cliph, 'CNZ');
@@ -627,8 +627,8 @@ class ReportBuilder
             $stretchOverflow = false;
         }
 
-        $align = $textField->textElement->getTextAlignment();
-        $valign = $textField->textElement->getVerticalAlignment();
+        $align = $textField->getTextAlignment();
+        $valign = $textField->getVerticalAlignment();
 
         // if (isset($data->textElement->font["fontName"])) {
 
@@ -636,14 +636,14 @@ class ReportBuilder
         //     //$data->text=$data->textElement->font["pdfFontName"];//$this->recommendFont($data->text);
         //     $font = $this->recommendFont($data->text, $data->textElement->font["fontName"], $data->textElement->font["pdfFontName"]);
         // }
-        $fontsize = $textField->textElement->font->size;
-        $fontstyle = $textField->textElement->font->getFontStyleString();
+        $fontsize = $textField->font->size;
+        $fontstyle = $textField->font->getFontStyleString();
 
         // if (isset($data->reportElement["key"]) && !empty($data->reportElement["key"])) {
         //     $height = $fontsize * $this->adjust;
         // }
 
-        $lineHeightRatio = $textField->textElement->paragraph->getLineHeightRatio();
+        $lineHeightRatio = $textField->paragraph->getLineHeightRatio();
 
         $this->pdf->setCellHeightRatio($lineHeightRatio);
 
@@ -653,7 +653,7 @@ class ReportBuilder
         $this->pdf->setDrawColor(0, 0, 0); //What is this for
         $this->pdf->setFillColor($fillColor->red, $fillColor->green, $fillColor->blue);
 
-        $this->pdf->setFont($textField->textElement->font->name, $fontstyle, $fontsize);
+        $this->pdf->setFont($textField->font->name, $fontstyle, $fontsize);
 
         //CHECK OVERFLOW METHOD. THIS IS REUSABLE PER COMPONENT?
 
@@ -679,7 +679,7 @@ class ReportBuilder
         $rotated = false;
 
         //handle rotation
-        $angle = $textField->textElement->rotationAngle();
+        $angle = $textField->rotationAngle();
 
         if ($angle > 0) {
             $this->pdf->Rect($clipx, $clipy, $clipw, $cliph, 'CNZ');
@@ -807,7 +807,7 @@ class ReportBuilder
                     //children can only be staticText
 
                     foreach ($column->columnHeader->children as $child) {
-                        $font = $child->textElement->font;
+                        $font = $child->font;
                         $this->pdf->setFont($font->name, $font->getFontStyleString(), $font->size);
                         
                         $heightNew = $this->pdf->getStringHeight($column->width, $child->text) * 1.5;
@@ -825,9 +825,9 @@ class ReportBuilder
                 
                 foreach($column->detailCell->children as $child) {
                     //get line spacing
-                    $lineHeightRatio = $child->textElement->paragraph->getLineHeightRatio();
+                    $lineHeightRatio = $child->paragraph->getLineHeightRatio();
                     
-                    $font = $child->textElement->font;
+                    $font = $child->font;
                     $this->pdf->setFont($font->name, $font->getFontStyleString(), $font->size);
                     
                     $heightNew = $this->pdf->getStringHeight($column->width, $child->text) * $lineHeightRatio;

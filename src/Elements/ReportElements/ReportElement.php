@@ -3,6 +3,8 @@
 namespace Thermiteplasma\Phusion\Elements\ReportElements;
 
 use Thermiteplasma\Phusion\Elements\RGBColor;
+use Thermiteplasma\Phusion\Enums\PositionType;
+use Thermiteplasma\Phusion\Enums\StretchType;
 
 class ReportElement
 {
@@ -11,8 +13,8 @@ class ReportElement
     public int $width = 0;
     public int $height = 0;
 
-    public string $positionType = 'FixRelativeToTop';
-    public string $stretchType = 'NoStretch';
+    public PositionType $positionType = PositionType::FIX_RELATIVE_TO_TOP;
+    public StretchType $stretchType = StretchType::NO_STRETCH;
     public string $mode = '';
 
     public RGBColor $foreColor;
@@ -31,8 +33,13 @@ class ReportElement
             $this->y = (int) $reportElement['y'] ?: $this->y;
             $this->width = (int) $reportElement['width'] ?: $this->width;
             $this->height = (int) $reportElement['height'] ?: $this->height;
-            $this->positionType = (string) $reportElement['positionType'] ?: $this->positionType;
-            $this->stretchType = (string) $reportElement['stretchType'] ?: $this->stretchType;
+
+            $positionType = (string) $element["positionType"] ?: 'FixRelativeToTop';
+            $this->positionType = PositionType::tryFrom($positionType);
+
+            $stretchType = (string) $element["stretchType"] ?: 'NoStretch';
+            $this->stretchType = StretchType::tryFrom($stretchType);
+
             $this->mode = (string) $reportElement['mode'] ?: $this->mode;
             $this->key = (string) $reportElement['key'] ?: $this->key;
             $this->isPrintWhenDetailOverflows = (bool) $reportElement['isPrintWhenDetailOverflows'] ?: $this->isPrintWhenDetailOverflows;

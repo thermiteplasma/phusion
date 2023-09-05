@@ -16,6 +16,12 @@ Class Box
     public int $rightPadding = 0;
     public int $leftPadding = 0;
 
+    public static function make(): static
+    {
+        $static = app(static::class);
+        return $static;
+    }
+    
     public function __construct($element = null)
     {
         $this->topPen = new Pen($element->topPen ?? null);
@@ -23,17 +29,20 @@ Class Box
         $this->rightPen = new Pen($element->rightPen ?? null);
         $this->leftPen = new Pen($element->leftPen ?? null);
 
-        if (isset($element['padding'])) {
-            $this->topPadding = (int)$element['padding'];
-            $this->bottomPadding = (int)$element['padding'];
-            $this->rightPadding = (int)$element['padding'];
-            $this->leftPadding = (int)$element['padding'];
-        } else {
-            $this->topPadding = (int)$element['topPadding'] ?: $this->topPadding;
-            $this->bottomPadding = (int)$element['bottomPadding'] ?: $this->bottomPadding;
-            $this->rightPadding = (int)$element['rightPadding'] ?: $this->rightPadding;
-            $this->leftPadding = (int)$element['leftPadding'] ?: $this->leftPadding;
+        if ($element) {
+            if (isset($element['padding'])) {
+                $this->topPadding = (int)$element['padding'];
+                $this->bottomPadding = (int)$element['padding'];
+                $this->rightPadding = (int)$element['padding'];
+                $this->leftPadding = (int)$element['padding'];
+            } else {
+                $this->topPadding = (int)$element['topPadding'] ?: $this->topPadding;
+                $this->bottomPadding = (int)$element['bottomPadding'] ?: $this->bottomPadding;
+                $this->rightPadding = (int)$element['rightPadding'] ?: $this->rightPadding;
+                $this->leftPadding = (int)$element['leftPadding'] ?: $this->leftPadding;
+            }
         }
+        
 
     }
 
@@ -59,7 +68,7 @@ Class Box
 
         return $border;
     }
-
+    
     public function topPen(Pen $topPen)
     {
         $this->topPen = $topPen;

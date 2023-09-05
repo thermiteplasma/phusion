@@ -1,14 +1,15 @@
 <?php
 
-namespace Thermiteplasma\Phusion\Elements\ReportElements;
+namespace Thermiteplasma\Phusion\Elements\ElementConcerns;
 
+use Thermiteplasma\Phusion\Elements\Box;
 use Thermiteplasma\Phusion\Elements\Font;
-use Thermiteplasma\Phusion\Enums\HorizontalAlignment;
 use Thermiteplasma\Phusion\Enums\Rotation;
-use Thermiteplasma\Phusion\Enums\TextAlignment;
+use Thermiteplasma\Phusion\Elements\Paragraph;
 use Thermiteplasma\Phusion\Enums\VerticalAlignment;
+use Thermiteplasma\Phusion\Enums\HorizontalAlignment;
 
-Class TextElement
+Trait WithTextElement
 {
     public HorizontalAlignment $textAlignment = HorizontalAlignment::LEFT;
     
@@ -20,7 +21,7 @@ Class TextElement
     
     public Paragraph $paragraph;
 
-    public function __construct($element = null)
+    public function setupTextElement($element = null)
     {
         $textAlignment = (string) $element["textAlignment"] ?: 'Left';
         $this->textAlignment = HorizontalAlignment::tryFrom($textAlignment);

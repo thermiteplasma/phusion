@@ -4,12 +4,13 @@ namespace Thermiteplasma\Phusion\Elements\ReportElements;
 
 use Closure;
 use Thermiteplasma\Phusion\Elements\Box;
+use Thermiteplasma\Phusion\Elements\ElementConcerns\WithBox;
 use Thermiteplasma\Phusion\Enums\VerticalAlignment;
 use Thermiteplasma\Phusion\Enums\HorizontalAlignment;
 
 class Image extends GraphicElement
 {
-    public ?Box $box = null;
+    use WithBox;
 
     public string $direction = 'TopDown';
 
@@ -48,12 +49,6 @@ class Image extends GraphicElement
         $vAlign = substr($this->vAlign->value, 0, 1);
 
         return $hAlign . $vAlign;
-    }
-
-    public function box(Box $box): static
-    {
-        $this->box = $box;
-        return $this;
     }
 
     public function imageExpression(string | Closure $imageExpression): static

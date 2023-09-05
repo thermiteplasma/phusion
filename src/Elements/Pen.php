@@ -11,6 +11,12 @@ class Pen
     
     public RGBColor $lineColor;
 
+    public static function make(): static
+    {
+        $static = app(static::class);
+        return $static;
+    }
+
     public function __construct($pen = null)
     {
         if (isset($pen['lineWidth'])) {

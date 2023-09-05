@@ -3,31 +3,36 @@
 namespace Thermiteplasma\Phusion\Elements\ReportElements;
 
 use Thermiteplasma\Phusion\Elements\Box;
-use Thermiteplasma\Phusion\Elements\ReportElements\TextElement;
-
+use Thermiteplasma\Phusion\Elements\ElementConcerns\WithBox;
+use Thermiteplasma\Phusion\Elements\ElementConcerns\WithTextElement;
+use Thermiteplasma\Phusion\Enums\TextAdjust;
 
 class TextField extends ReportElement
 {
-    public ?Box $box = null;
-    public TextElement $textElement;
-
+    use WithBox;
+    use WithTextElement;
+    
     public string $textFieldExpression;
+
     public bool $isBlankWhenNull = true;
+    
     public bool $isStretchWithOverflow = false;
 
-    public string $textAdjust = 'CutText'; //CutText, StretchHeight, ScaleFont
+    public TextAdjust $textAdjust = TextAdjust::CUT_TEXT;
 
     public function __construct($element)
     {
         $this->box = new Box($element->box);
-        $this->textElement = new TextElement($element->textElement);
+        $this->setupTextElement($element->textElement);
         
         $this->textFieldExpression = (string) $element->textFieldExpression;
         $this->isBlankWhenNull = (bool) $element->isBlankWhenNull ?: $this->isBlankWhenNull;
         $this->isStretchWithOverflow = (bool) $element->isStretchWithOverflow ?: $this->isStretchWithOverflow;
-        $this->textAdjust = (string) $element->textAdjust ?: $this->textAdjust;
+        
+        $textAdjust = (string) $element["textAdjust"] ?: 'CutText';
+        $this->textAdjust = TextAdjust::tryFrom($textAdjust);
 
-        if ($this->textAdjust == 'CutText') {
+        if ($this->textAdjust == TextAdjust::CUT_TEXT) {
             $this->isStretchWithOverflow = false;
         }
         
@@ -40,12 +45,6 @@ class TextField extends ReportElement
         return $this;
     }
 
-    public function textElement(TextElement $textElement): static
-    {
-        $this->textElement = $textElement;
-        return $this;
-    }
-    
     public function textFieldExpression(string $textFieldExpression): static
     {
         $this->textFieldExpression = $textFieldExpression;
