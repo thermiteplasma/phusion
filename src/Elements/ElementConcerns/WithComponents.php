@@ -10,13 +10,13 @@ use Thermiteplasma\Phusion\Elements\ReportElements\TextField;
 use Thermiteplasma\Phusion\Elements\ReportElements\StaticText;
 
 
-Trait ContainsChildElements
+Trait WithComponents
 {
-    public $children = [];
+    public $components = [];
     
-    public function add($child)
+    public function add($component)
     {
-        $this->children[] = $child;
+        $this->components[] = $component;
     }
 
     public function typeToClass($type)

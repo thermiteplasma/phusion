@@ -49,7 +49,7 @@ class ReportElement
         }
 
         if (isset($element->reportElement['mode'])) {
-            $this->stretchType = (string) $element->reportElement['mode'];
+            $this->mode = (string) $element->reportElement['mode'];
         }
 
         if (isset($element->reportElement['isPrintWhenDetailOverflows'])) {

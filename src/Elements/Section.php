@@ -3,11 +3,11 @@
 namespace Thermiteplasma\Phusion\Elements;
 
 use Thermiteplasma\Phusion\Enums\SplitType;
-use Thermiteplasma\Phusion\Elements\ElementConcerns\ContainsChildElements;
+use Thermiteplasma\Phusion\Elements\ElementConcerns\WithComponents;
 
 class Section
 {
-    use ContainsChildElements;
+    use WithComponents;
 
     public int $height = 0;
     public SplitType $splitType = SplitType::STRETCH;
@@ -18,16 +18,19 @@ class Section
         return $static;
     }
     
-    public function __construct($band)
-    {
-        // $band = $section->band;
+    public function __construct($band = null)
+    { 
+        if (isset($band['height'])) {
+            $this->height = (int) $band['height'];
+        }
 
-        $this->height = (int) $band['height'];
+        if (isset($band['splitType'])) {
+            $this->splitType = SplitType::tryFrom((string) $band["splitType"]);
+        }
         
-        $splitType = (string) $band["splitType"] ?: 'Stretch';
-        $this->splitType = SplitType::tryFrom($splitType);
-
-        $this->processChildren($band);
+        if ($band) {
+            $this->processChildren($band);
+        }
     }
 
     public function height(int $height): static
