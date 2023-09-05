@@ -50,4 +50,34 @@ Class TextElement
     {
         return $this->rotation->angle();
     }
+
+    public function textAlignment(HorizontalAlignment | string $textAlignment): static
+    {
+        $this->textAlignment = HorizontalAlignment::tryFrom($textAlignment);
+        return $this;
+    }
+
+    public function verticalAlignment(VerticalAlignment | string $verticalAlignment): static
+    {
+        $this->verticalAlignment = VerticalAlignment::tryFrom($verticalAlignment);
+        return $this;
+    }
+
+    public function rotation(Rotation | string $rotation): static
+    {
+        $this->rotation = Rotation::tryFrom($rotation);
+        return $this;
+    }
+
+    public function font(Font $font): static
+    {
+        $this->font = $font;
+        return $this;
+    }
+
+    public function paragraph(Paragraph $paragraph): static
+    {
+        $this->paragraph = $paragraph;
+        return $this;
+    }
 }

@@ -13,4 +13,10 @@ class Line extends GraphicElement
         parent::__construct($element);
     }
 
+    public function direction(string $direction): static
+    {
+        $this->direction = $direction;
+        return $this;
+    }
+
 }

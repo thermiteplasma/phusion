@@ -44,4 +44,22 @@ class Pen
             default => '0',
         };
     }
+
+    public function lineWidth($lineWidth)
+    {
+        $this->lineWidth = $lineWidth;
+        return $this;
+    }
+
+    public function lineStyle($lineStyle)
+    {
+        $this->lineStyle = $lineStyle;
+        return $this;
+    }
+
+    public function lineColor(RGBColor $lineColor)
+    {
+        $this->lineColor = $lineColor;
+        return $this;
+    }
 }

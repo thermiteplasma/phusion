@@ -33,5 +33,40 @@ class TextField extends ReportElement
         
         parent::__construct($element);
     }
+
+    public function box(Box $box): static
+    {
+        $this->box = $box;
+        return $this;
+    }
+
+    public function textElement(TextElement $textElement): static
+    {
+        $this->textElement = $textElement;
+        return $this;
+    }
     
+    public function textFieldExpression(string $textFieldExpression): static
+    {
+        $this->textFieldExpression = $textFieldExpression;
+        return $this;
+    }
+
+    public function isBlankWhenNull(bool $isBlankWhenNull): static
+    {
+        $this->isBlankWhenNull = $isBlankWhenNull;
+        return $this;
+    }
+
+    public function isStretchWithOverflow(bool $isStretchWithOverflow): static
+    {
+        $this->isStretchWithOverflow = $isStretchWithOverflow;
+        return $this;
+    }
+
+    public function textAdjust(string $textAdjust): static
+    {
+        $this->textAdjust = $textAdjust;
+        return $this;
+    }
 }

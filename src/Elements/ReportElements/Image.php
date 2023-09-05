@@ -2,6 +2,7 @@
 
 namespace Thermiteplasma\Phusion\Elements\ReportElements;
 
+use Closure;
 use Thermiteplasma\Phusion\Elements\Box;
 use Thermiteplasma\Phusion\Enums\VerticalAlignment;
 use Thermiteplasma\Phusion\Enums\HorizontalAlignment;
@@ -47,6 +48,36 @@ class Image extends GraphicElement
         $vAlign = substr($this->vAlign->value, 0, 1);
 
         return $hAlign . $vAlign;
+    }
+
+    public function box(Box $box): static
+    {
+        $this->box = $box;
+        return $this;
+    }
+
+    public function imageExpression(string | Closure $imageExpression): static
+    {
+        $this->imageExpression = $imageExpression;
+        return $this;
+    }
+
+    public function scaleImage(string $scaleImage): static
+    {
+        $this->scaleImage = $scaleImage;
+        return $this;
+    }
+
+    public function hAlign(HorizontalAlignment $hAlign): static
+    {
+        $this->hAlign = $hAlign;
+        return $this;
+    }
+
+    public function vAlign(VerticalAlignment $vAlign): static
+    {
+        $this->vAlign = $vAlign;
+        return $this;
     }
 
 }

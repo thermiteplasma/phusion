@@ -24,5 +24,17 @@ class Section
         $this->processChildren($band);
     }
 
+    public function height(int $height): static
+    {
+        $this->height = $height;
+        return $this;
+    }
+
+    public function splitType(SplitType | string $splitType): static
+    {
+        $this->splitType = SplitType::tryFrom($splitType);
+        return $this;
+    }
+
 }
 ?>

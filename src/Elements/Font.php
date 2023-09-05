@@ -39,4 +39,34 @@ class Font
         }
         return $fontStyle;
     }
+
+    public function size(int $size): static
+    {
+        $this->size = $size;
+        return $this;
+    }
+
+    public function isBold(bool $isBold): static
+    {
+        $this->isBold = $isBold;
+        return $this;
+    }
+
+    public function isItalic(bool $isItalic): static
+    {
+        $this->isItalic = $isItalic;
+        return $this;
+    }
+
+    public function isUnderline(bool $isUnderline): static
+    {
+        $this->isUnderline = $isUnderline;
+        return $this;
+    }
+
+    public function name(string $name): static
+    {
+        $this->name = $name;
+        return $this;
+    }
 }

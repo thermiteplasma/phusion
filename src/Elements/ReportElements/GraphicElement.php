@@ -2,6 +2,7 @@
 
 namespace Thermiteplasma\Phusion\Elements\ReportElements;
 
+use Closure;
 use Thermiteplasma\Phusion\Elements\Pen;
 
 class GraphicElement extends ReportElement
@@ -15,5 +16,11 @@ class GraphicElement extends ReportElement
         $graphicElement = $element->graphicElement ?? null;
 
         $this->pen = new Pen($graphicElement->pen ?? null);
+    }
+
+    public function pen(Pen | Closure $pen)
+    {
+        $this->pen = $pen;
+        return $this;
     }
 }

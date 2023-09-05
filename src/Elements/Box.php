@@ -59,4 +59,54 @@ Class Box
 
         return $border;
     }
+
+    public function topPen(Pen $topPen)
+    {
+        $this->topPen = $topPen;
+        return $this;
+    }
+
+    public function bottomPen(Pen $bottomPen)
+    {
+        $this->bottomPen = $bottomPen;
+        return $this;
+    }
+
+    public function rightPen(Pen $rightPen)
+    {
+        $this->rightPen = $rightPen;
+        return $this;
+    }
+
+    public function leftPen(Pen $leftPen)
+    {
+        $this->leftPen = $leftPen;
+        return $this;
+    }
+
+    public function topPadding($topPadding)
+    {
+        $this->topPadding = $topPadding;
+        return $this;
+    }
+
+    public function bottomPadding($bottomPadding)
+    {
+        $this->bottomPadding = $bottomPadding;
+        return $this;
+    }
+
+    public function rightPadding($rightPadding)
+    {
+        $this->rightPadding = $rightPadding;
+        return $this;
+    }
+
+    public function leftPadding($leftPadding)
+    {
+        $this->leftPadding = $leftPadding;
+        return $this;
+    }
+
+    
 }

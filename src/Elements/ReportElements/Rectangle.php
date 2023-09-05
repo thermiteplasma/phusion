@@ -12,6 +12,12 @@ class Rectangle extends GraphicElement {
 
         $this->radius = (int) $element['radius'] ?? $this->radius;
     }
+
+    public function radius(int $radius): static
+    {
+        $this->radius = $radius;
+        return $this;
+    }
 }
 
 ?>

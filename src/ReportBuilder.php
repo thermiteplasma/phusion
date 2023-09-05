@@ -2,7 +2,10 @@
 
 namespace Thermiteplasma\Phusion;
 
+use Illuminate\Support\Facades\Blade;
 use TCPDF;
+use Illuminate\Support\Str;
+use Illuminate\View\Compilers\BladeCompiler;
 use Thermiteplasma\Phusion\Dataset\Field;
 use Thermiteplasma\Phusion\Enums\ResetType;
 use Thermiteplasma\Phusion\Enums\SplitType;
@@ -33,6 +36,10 @@ class ReportBuilder
 
     public $groups = [];
 
+    public $groupChanged = false;
+
+    public $rowIndex = 0;
+
     public function generate(Report $report)
     {
         $this->report = $report;
@@ -56,11 +63,13 @@ class ReportBuilder
         $this->drawTitle();
 
         $this->drawPageHeader();
+
         $this->drawColumnHeader();
         
         $this->drawDetail();
 
         $this->drawColumnFooter();
+        
         $this->drawPageFooter();
 
         return $this;
@@ -187,18 +196,24 @@ class ReportBuilder
         if ($this->report->mainDataset->groups) {
             foreach($this->report->mainDataset->groups as $groupName => $group) {
                 
-                $groupResult = $group->groupExpression->call($this, $this->report->mainDataset->rowData);
+                $groupResult = $group->groupExpression->call($this, $this->rowData());
                 
                 $currentGroupValue = $this->groups[$groupName]['value'] ?? null;
                 
                 // ray('GROUP ' . $groupName, $groupResult, $currentGroup);
 
                 if ($groupResult != $currentGroupValue) {
-                    
-                    $this->groups[$groupName]['value'] = $groupResult;
-                    $this->groups[$groupName]['count'] = 1;
 
-                    $this->variables[$groupName . '_COUNT'] = $this->groups[$groupName]['count'];
+                    if ($this->groups[$groupName]['count'] == 0) {
+                        $this->groups[$groupName]['is_first'] = true;
+                    } else {
+                        $this->groups[$groupName]['is_last'] = true;
+                    }
+
+                    $this->groups[$groupName]['value'] = $groupResult;
+                    
+
+                    $this->variables[$groupName . '_COUNT'] = $this->groups[$groupName]['count'] + 1;
                     
                     foreach($group->headers as $header) {
                         
@@ -210,10 +225,13 @@ class ReportBuilder
     
                         $this->setYAxis($header->height);
                     }
+
                 } else {
-                    ray('INCREMENT GROUP COUNT', $this->groups);
-                    $this->groups[$groupName]['count']++;
+                    ray('INCREMENT GROUP COUNT1', $this->groups);
+                    $this->groups[$groupName]['is_first'] = false;
                 }
+
+                $this->groups[$groupName]['count']++;
 
             }
 
@@ -271,29 +289,49 @@ class ReportBuilder
                     }
                 }
 
-                $this->report->mainDataset->nextRow();
+                ray('RI ' . $this->rowIndex . ' ' . count($this->report->mainDataset->data));
+                
+                $this->drawGroupFooters();
+
+                if ($this->rowIndex < count($this->report->mainDataset->data)) {
+                    $this->rowIndex++;
+                }
+                
+                // $this->report->mainDataset->nextRow();
 
                 //process data for group footers here
                 
                 
-                $this->drawGroupFooters();
+                
             }
         }
         return;
     }
 
+    private function rowData()
+    {
+        // ray('get row data for ' . $this->rowIndex);
+        return $this->report->mainDataset->data[$this->rowIndex];
+    }
+
     private function drawGroupFooters()
     {
         //how do we know we are at he ned of a group?
-
+        // ray('draw group footers');
         if ($this->report->mainDataset->groups) {
+            // ray('groups');
             foreach(array_reverse($this->report->mainDataset->groups) as $groupName => $group) {
-
-                $groupResult = $group->groupExpression->call($this, $this->report->mainDataset->rowData);
+                
+                $groupResult = $group->groupExpression->call($this, $this->rowData());
                 
                 $currentGroup = $this->groups[$groupName]['value'] ?? null;
+
+                ray('group', $groupName, $groupResult, $currentGroup, $this->variables['REPORT_COUNT'], count($this->report->mainDataset->data));
+
+                //how do we know we are at the end of a group if there is only one?
+
                 // ray('GROUP', $groupResult, $currentGroup);
-                if ($groupResult != $currentGroup) {
+                if ($groupResult != $currentGroup || $this->variables['REPORT_COUNT'] == count($this->report->mainDataset->data)) {
                     //end of group
                     foreach($group->footers as $footer) {
                         
@@ -348,15 +386,20 @@ class ReportBuilder
 
     private function drawPageFooter()
     {
-        // ray('DRAW PAGE FOOTER');
         if ($this->report->pageFooter) {
-            $this->yAxis = $this->report->topMargin;
 
-            $this->setYAxis($this->report->pageHeight - $this->report->topMargin - $this->report->pageFooter->height - $this->report->bottomMargin);
+            //OLD
+            // $this->yAxis = $this->report->topMargin;
+            // $this->setYAxis($this->report->pageHeight - $this->report->topMargin - ($this->report->pageFooter->height ?? 0) - $this->report->bottomMargin);
 
-            $this->generateSectionElements($this->report->pageFooter, $this->report->mainDataset->rowData);
+            //NEW
+            $this->yAxis = $this->report->pageHeight - $this->report->pageFooter->height - $this->report->bottomMargin;
 
-            $this->setYAxis($this->report->pageFooter->height);
+            $this->generateSectionElements($this->report->pageFooter, $this->rowData());
+
+            //do we need this?
+            // $this->setYAxis($this->report->pageFooter->height);
+            $this->yAxis += $this->report->pageFooter->height;
         }
     }
 
@@ -1011,6 +1054,7 @@ class ReportBuilder
 
     private function setYAxis($y)
     {
+        //bit deceiving. This will only set the Y axis if the new Y axis is less than the page height
         if ($this->yAxis + $y <= $this->report->pageHeight) {
             $this->yAxis = $this->yAxis + $y;
         }
@@ -1021,32 +1065,52 @@ class ReportBuilder
         $preventY_axis = $this->yAxis + $y;
 
         $pageFooterHeight = $this->report->pageFooter->height ?? 0;
-        $topMargin = $this->report->topMargin;
-        $bottomMargin = $this->report->bottomMargin;
-        $discount = $this->report->pageHeight - $pageFooterHeight - $topMargin - $bottomMargin; //dicount heights of page parts;
+        
+        $discount = $this->report->pageHeight - $pageFooterHeight - $this->report->topMargin - $this->report->bottomMargin; //dicount heights of page parts;
         
         if ($preventY_axis >= $discount) {
-            if ($this->report->pageFooter) {
-                // JasperPHP\Instructions::$lastPageFooter = false;
-                $this->drawPageFooter();
-            }
-
+            
+            $this->drawPageFooter();
+            
             $this->newPage();
+
             $this->drawPageHeader();
+
             $this->drawColumnHeader();
 
         }
     }
 
+    private function x($expression)
+    {
+        return Blade::render($expression, ['variables' => $this->variables, 'row' => $this->rowData()]);
+    }
 
-
-
-
+    private function hey($expression)
+    {
+        $var = $this->variables;
+        $rowData = $this->rowData();
+        return eval("return $expression;");
+    }
+    
     // public function getExpression($text, $row, $writeHTML = null, $element = null) {
     public function getExpression($expression, $writeHTML = null) {
         
-        // ray($expression);
+        // if (Str::of($expression)->startsWith('"Group Count')) {
+            // ray(Blade::render($expression, ['variables' => $this->variables]));
+            // $expression = '"Group Count " . $this->variables[\'Group2_COUNT\']';
+            // ray(eval("\$expression = $expression;"));
+        
+        return $this->hey($expression);
+            // return eval("return $expression;");
+            // ray($expression);
+            // dd($expression);
+        // }
+        return $this->x($expression);
+
         $text = $expression;
+
+        \Illuminate\Support\Facades\Blade::class;
 
         preg_match_all("/V{(\w+)}/", $expression, $variableMatches);
         if ($variableMatches) {
@@ -1081,7 +1145,10 @@ class ReportBuilder
 
     // public function getFieldValue($field, $row, $text, $htmlentities = false) {
     public function getFieldValue(Field $field, $htmlentities = false) {
-        return $this->report->mainDataset->valueFor($field);
+        if ($field) {
+            return collect($this->rowData())->pull($field->map ?? '');
+        }
+        return $field;
     }
 
     public function calculateVariables() {
@@ -1103,7 +1170,7 @@ class ReportBuilder
         
         $currentValue = $this->variables[$name] ?? null;
         
-        $result = $variable->variableExpression->call($this, $this->report->mainDataset->rowData);
+        $result = $variable->variableExpression->call($this, $this->rowData());
         
         $value = $result;
         
