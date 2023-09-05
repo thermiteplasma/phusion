@@ -3,11 +3,12 @@
 namespace Thermiteplasma\Phusion\Elements;
 
 use Thermiteplasma\Phusion\Elements\RGBColor;
+use Thermiteplasma\Phusion\Enums\LineStyle;
 
 class Pen
 {
     public float $lineWidth = 0;
-    public string $lineStyle = 'Solid';
+    public LineStyle $lineStyle = LineStyle::SOLID;
     
     public RGBColor $lineColor;
 
@@ -24,7 +25,7 @@ class Pen
         }
 
         if (isset($pen['lineStyle'])) {
-            $this->lineStyle = (string) $pen['lineStyle'];
+            $this->lineStyle = LineStyle::tryFrom((string) $pen['lineStyle']);
         }
 
         $this->lineColor = new RGBColor($pen['lineColor'] ?? '#000000');
@@ -37,18 +38,8 @@ class Pen
             'color' => $this->lineColor->toArray(),
             'cap' => 'square',
             'join' => 'miter',
-            'dash' => $this->dash(),
+            'dash' => $this->lineStyle->tcpdfValue(),
         ];
-    }
-
-    public function dash()
-    {
-        return match ($this->lineStyle) {
-            'Dotted' => '0,1',
-            'Dashed' => '4,2',
-            'Solid' => '0',
-            default => '0',
-        };
     }
 
     public function lineWidth($lineWidth)
@@ -57,7 +48,7 @@ class Pen
         return $this;
     }
 
-    public function lineStyle($lineStyle)
+    public function lineStyle(LineStyle $lineStyle)
     {
         $this->lineStyle = $lineStyle;
         return $this;

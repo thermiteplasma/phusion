@@ -44,9 +44,6 @@ class Image extends ReportElement
             $this->vAlign = VerticalAlignment::tryFrom((string) $element["vAlign"]);
         }
 
-        if (!file_exists($this->imageExpression)) {
-            ray('Could not find image at', $this->imageExpression)->red();
-        }
         parent::__construct($element);
     }
 
