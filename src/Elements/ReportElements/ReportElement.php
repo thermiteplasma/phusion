@@ -22,31 +22,29 @@ class ReportElement
 
     public bool $isPrintWhenDetailOverflows = false;
 
-    public $key = null;
-
     public function __construct($element = null)
     {
-        if ($element) {
-            $reportElement = $element->reportElement;
+        
+        $reportElement = $element?->reportElement;
 
-            $this->x = (int) $reportElement['x'] ?: $this->x;
-            $this->y = (int) $reportElement['y'] ?: $this->y;
-            $this->width = (int) $reportElement['width'] ?: $this->width;
-            $this->height = (int) $reportElement['height'] ?: $this->height;
+        $this->x = (int) $reportElement['x'] ?: $this->x;
+        $this->y = (int) $reportElement['y'] ?: $this->y;
+        $this->width = (int) $reportElement['width'] ?: $this->width;
+        $this->height = (int) $reportElement['height'] ?: $this->height;
 
-            $positionType = (string) $element["positionType"] ?: 'FixRelativeToTop';
-            $this->positionType = PositionType::tryFrom($positionType);
+        $positionType = (string) $element["positionType"] ?: 'FixRelativeToTop';
+        $this->positionType = PositionType::tryFrom($positionType);
 
-            $stretchType = (string) $element["stretchType"] ?: 'NoStretch';
-            $this->stretchType = StretchType::tryFrom($stretchType);
+        $stretchType = (string) $element["stretchType"] ?: 'NoStretch';
+        $this->stretchType = StretchType::tryFrom($stretchType);
 
-            $this->mode = (string) $reportElement['mode'] ?: $this->mode;
-            $this->key = (string) $reportElement['key'] ?: $this->key;
-            $this->isPrintWhenDetailOverflows = (bool) $reportElement['isPrintWhenDetailOverflows'] ?: $this->isPrintWhenDetailOverflows;
-    
-            $this->foreColor = new RGBColor($reportElement['forecolor'] ?? '#000000');
-            $this->backColor = new RGBColor($reportElement['backcolor'] ?? '#FFFFFF');
-        }
+        $this->mode = (string) $reportElement['mode'] ?: $this->mode;
+        
+        $this->isPrintWhenDetailOverflows = (bool) $reportElement['isPrintWhenDetailOverflows'] ?: $this->isPrintWhenDetailOverflows;
+
+        $this->foreColor = new RGBColor($reportElement['forecolor'] ?? '#000000');
+        $this->backColor = new RGBColor($reportElement['backcolor'] ?? '#FFFFFF');
+        
        
     }
 

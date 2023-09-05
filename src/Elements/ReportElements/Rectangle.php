@@ -2,7 +2,12 @@
 
 namespace Thermiteplasma\Phusion\Elements\ReportElements;
 
-class Rectangle extends GraphicElement {
+use Thermiteplasma\Phusion\Elements\Pen;
+use Thermiteplasma\Phusion\Elements\ElementConcerns\WithPen;
+
+class Rectangle extends ReportElement {
+
+    use WithPen;
 
     public int $radius = 0;
 
@@ -10,6 +15,7 @@ class Rectangle extends GraphicElement {
     {
         parent::__construct($element);
 
+        $this->pen = new Pen($element?->graphicElement?->pen);
         $this->radius = (int) $element['radius'] ?? $this->radius;
     }
 

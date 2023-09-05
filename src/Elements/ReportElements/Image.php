@@ -4,13 +4,16 @@ namespace Thermiteplasma\Phusion\Elements\ReportElements;
 
 use Closure;
 use Thermiteplasma\Phusion\Elements\Box;
-use Thermiteplasma\Phusion\Elements\ElementConcerns\WithBox;
+use Thermiteplasma\Phusion\Elements\Pen;
 use Thermiteplasma\Phusion\Enums\VerticalAlignment;
 use Thermiteplasma\Phusion\Enums\HorizontalAlignment;
+use Thermiteplasma\Phusion\Elements\ElementConcerns\WithBox;
+use Thermiteplasma\Phusion\Elements\ElementConcerns\WithPen;
 
-class Image extends GraphicElement
+class Image extends ReportElement
 {
     use WithBox;
+    use WithPen;
 
     public string $direction = 'TopDown';
 
@@ -23,7 +26,8 @@ class Image extends GraphicElement
     public function __construct($element)
     {
         $this->box = new Box($element->box);
-        
+        $this->pen = new Pen($element?->graphicElement?->pen);
+
         $this->imageExpression = $element->imageExpression;
         $this->scaleImage = (string) $element['scaleImage'] ?: $this->scaleImage;
 
