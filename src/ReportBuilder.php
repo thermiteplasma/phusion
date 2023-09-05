@@ -18,6 +18,7 @@ use Thermiteplasma\Phusion\Elements\ReportElements\Table;
 use Thermiteplasma\Phusion\Elements\ReportElements\Rectangle;
 use Thermiteplasma\Phusion\Elements\ReportElements\TextField;
 use Thermiteplasma\Phusion\Elements\ReportElements\StaticText;
+use Thermiteplasma\Phusion\Enums\LineDirection;
 
 class ReportBuilder
 {
@@ -457,7 +458,7 @@ class ReportBuilder
             'dash' => $dash,
         ];
 
-        if ($line->direction == 'TopDown') {
+        if ($line->direction == LineDirection::TOP_DOWN) {
             $this->pdf->Line(x1: $line->x + $this->report->leftMargin, y1: $line->y + $this->yAxis, x2: $line->x + $line->width + $this->report->leftMargin, y2: $line->y + $line->height + $this->yAxis, style: $style);
         } else {
             $this->pdf->Line(x1: $line->x + $this->report->leftMargin, y1: $line->y + $line->height + $this->yAxis, x2: $line->x + $line->width + $this->report->leftMargin, y2: $line->y + $this->yAxis, style: $style);

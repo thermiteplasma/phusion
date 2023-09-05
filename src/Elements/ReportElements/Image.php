@@ -15,8 +15,6 @@ class Image extends ReportElement
     use WithBox;
     use WithPen;
 
-    public string $direction = 'TopDown';
-
     public string $imageExpression = '';
     public string $scaleImage = 'RealSize';
 
