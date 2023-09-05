@@ -22,16 +22,17 @@ class TextField extends ReportElement
 
     public function __construct($element = null)
     {
-        $this->box = new Box($element->box);
-        $this->setupTextElement($element->textElement);
+        $this->box = new Box($element?->box);
+        $this->setupTextElement($element?->textElement);
         
-        $this->textFieldExpression = (string) $element->textFieldExpression;
-        $this->isBlankWhenNull = (bool) $element->isBlankWhenNull ?: $this->isBlankWhenNull;
-        $this->isStretchWithOverflow = (bool) $element->isStretchWithOverflow ?: $this->isStretchWithOverflow;
+        $this->textFieldExpression = (string) $element?->textFieldExpression;
+        $this->isBlankWhenNull = (bool) $element?->isBlankWhenNull ?: $this->isBlankWhenNull;
+        $this->isStretchWithOverflow = (bool) $element?->isStretchWithOverflow ?: $this->isStretchWithOverflow;
         
-        $textAdjust = (string) $element["textAdjust"] ?: 'CutText';
-        $this->textAdjust = TextAdjust::tryFrom($textAdjust);
-
+        if (isset($element["textAdjust"])) {
+            $this->textAdjust = TextAdjust::tryFrom((string) $element["textAdjust"]);
+        }
+        
         if ($this->textAdjust == TextAdjust::CUT_TEXT) {
             $this->isStretchWithOverflow = false;
         }

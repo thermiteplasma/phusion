@@ -15,7 +15,9 @@ class Line extends ReportElement
     {
         $this->pen = new Pen($element?->graphicElement?->pen);
 
-        $this->direction = (string) $element['direction'] ?: $this->direction;
+        if (isset($element['direction'])) {
+            $this->direction = (string) $element['direction'];
+        }
 
         parent::__construct($element);
     }

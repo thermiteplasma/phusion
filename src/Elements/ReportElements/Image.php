@@ -28,15 +28,22 @@ class Image extends ReportElement
         $this->box = new Box($element?->box);
         $this->pen = new Pen($element?->graphicElement?->pen);
 
-        $this->imageExpression = $element?->imageExpression;
-        $this->scaleImage = (string) $element['scaleImage'] ?: $this->scaleImage;
+        if (isset($element->imageExpression)) {
+            $this->imageExpression = $element->imageExpression;
+        }
 
-        $hAlign = (string) $element["hAlign"] ?: 'Left';
-        $this->hAlign = HorizontalAlignment::tryFrom($hAlign);
+        if (isset($element->scaleImage)) {
+            $this->scaleImage = $element->scaleImage;
+        }
 
-        $vAlign = (string) $element["vAlign"] ?: 'Top';
-        $this->vAlign = VerticalAlignment::tryFrom($vAlign);
-        
+        if (isset($element["hAlign"])) {
+            $this->hAlign = HorizontalAlignment::tryFrom((string) $element["hAlign"]);
+        }
+
+        if (isset($element["vAlign"])) {
+            $this->vAlign = VerticalAlignment::tryFrom((string) $element["vAlign"]);
+        }
+
         if (!file_exists($this->imageExpression)) {
             ray('Could not find image at', $this->imageExpression)->red();
         }

@@ -2,7 +2,6 @@
 
 namespace Thermiteplasma\Phusion\Elements\ElementConcerns;
 
-use Thermiteplasma\Phusion\Elements\Box;
 use Thermiteplasma\Phusion\Elements\Font;
 use Thermiteplasma\Phusion\Enums\Rotation;
 use Thermiteplasma\Phusion\Elements\Paragraph;
@@ -23,14 +22,18 @@ Trait WithTextElement
 
     public function setupTextElement($element = null)
     {
-        $textAlignment = (string) $element["textAlignment"] ?: 'Left';
-        $this->textAlignment = HorizontalAlignment::tryFrom($textAlignment);
+        if (isset($element['textAlignment'])) {
+            $this->textAlignment = HorizontalAlignment::tryFrom((string) $element["textAlignment"]);
+        }
 
-        $verticalAlignment = (string) $element["verticalAlignment"] ?: 'Top';
-        $this->verticalAlignment = VerticalAlignment::tryFrom($verticalAlignment);
+        if (isset($element['verticalAlignment'])) {
+            $this->verticalAlignment = VerticalAlignment::tryFrom((string) $element["verticalAlignment"]);
+        }
 
-        $rotation = (string) $element["rotation"] ?: 'None';
-        $this->rotation = Rotation::tryFrom($rotation);
+        if (isset($element['rotation'])) {
+            $this->rotation = Rotation::tryFrom((string) $element["rotation"]);
+        }
+        
 
         $this->font = new Font($element->font ?? null);
 

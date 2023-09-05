@@ -19,7 +19,7 @@ class StaticText extends ReportElement
         
         $this->setupTextElement($element?->textElement);
         
-        $this->text = (string) $element?->text;
+        $this->text = (string) $element?->text ?? '';
         
         parent::__construct($element);
     }

@@ -16,7 +16,10 @@ class Rectangle extends ReportElement {
         parent::__construct($element);
 
         $this->pen = new Pen($element?->graphicElement?->pen);
-        $this->radius = (int) $element['radius'] ?? $this->radius;
+        
+        if (isset($element['radius'])) {
+            $this->radius = (int) $element['radius'];
+        }
     }
 
     public function radius(int $radius): static
