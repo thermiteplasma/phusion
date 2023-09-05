@@ -9,6 +9,7 @@ use Thermiteplasma\Phusion\Enums\VerticalAlignment;
 use Thermiteplasma\Phusion\Enums\HorizontalAlignment;
 use Thermiteplasma\Phusion\Elements\ElementConcerns\WithBox;
 use Thermiteplasma\Phusion\Elements\ElementConcerns\WithPen;
+use Thermiteplasma\Phusion\Enums\ScaleImage;
 
 class Image extends ReportElement
 {
@@ -16,7 +17,7 @@ class Image extends ReportElement
     use WithPen;
 
     public string $imageExpression = '';
-    public string $scaleImage = 'RealSize';
+    public ScaleImage $scaleImage = ScaleImage::REAL_SIZE;
 
     public HorizontalAlignment $hAlign = HorizontalAlignment::LEFT;
     public VerticalAlignment $vAlign = VerticalAlignment::TOP;
@@ -31,7 +32,7 @@ class Image extends ReportElement
         }
 
         if (isset($element->scaleImage)) {
-            $this->scaleImage = $element->scaleImage;
+            $this->scaleImage = ScaleImage::tryFrom((string) $element->scaleImage);
         }
 
         if (isset($element["hAlign"])) {
@@ -47,7 +48,7 @@ class Image extends ReportElement
 
     public function getFitbox()
     {
-        if ($this->scaleImage == 'FillFrame') {
+        if ($this->scaleImage == ScaleImage::FILL_FRAME) {
             return false;
         }
 
@@ -63,7 +64,7 @@ class Image extends ReportElement
         return $this;
     }
 
-    public function scaleImage(string $scaleImage): static
+    public function scaleImage(ScaleImage $scaleImage): static
     {
         $this->scaleImage = $scaleImage;
         return $this;
