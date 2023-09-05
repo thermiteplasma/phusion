@@ -12,6 +12,12 @@ class Section
     public int $height = 0;
     public SplitType $splitType = SplitType::STRETCH;
 
+    public static function make(): static
+    {
+        $static = app(static::class);
+        return $static;
+    }
+    
     public function __construct($band)
     {
         // $band = $section->band;

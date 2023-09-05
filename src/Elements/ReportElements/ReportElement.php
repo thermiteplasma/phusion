@@ -48,6 +48,12 @@ class ReportElement
        
     }
 
+    public static function make(): static
+    {
+        $static = app(static::class);
+        return $static;
+    }
+    
     public function shouldFill(): bool
     {
         return $this->mode === 'Opaque';

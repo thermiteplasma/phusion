@@ -14,6 +14,12 @@ class Style
     public RGBColor $foreColor;
     public RGBColor $backColor;
 
+    public static function make(): static
+    {
+        $static = app(static::class);
+        return $static;
+    }
+    
     public function __construct($element = null) {
         
         $this->box = new Box($element->box);
