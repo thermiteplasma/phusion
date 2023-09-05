@@ -14,6 +14,12 @@ Trait WithComponents
 {
     public $components = [];
     
+    public function components(array $components): static
+    {
+        $this->components = $components;
+        return $this;
+    }
+    
     public function add($component)
     {
         $this->components[] = $component;
