@@ -20,7 +20,7 @@ class TextField extends ReportElement
 
     public TextAdjust $textAdjust = TextAdjust::CUT_TEXT;
 
-    public function __construct($element)
+    public function __construct($element = null)
     {
         $this->box = new Box($element->box);
         $this->setupTextElement($element->textElement);

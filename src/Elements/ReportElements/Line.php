@@ -11,7 +11,7 @@ class Line extends ReportElement
     
     public string $direction = 'TopDown';
 
-    public function __construct($element)
+    public function __construct($element = null)
     {
         $this->pen = new Pen($element?->graphicElement?->pen);
 

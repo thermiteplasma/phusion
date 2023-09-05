@@ -23,12 +23,12 @@ class Image extends ReportElement
     public HorizontalAlignment $hAlign = HorizontalAlignment::LEFT;
     public VerticalAlignment $vAlign = VerticalAlignment::TOP;
 
-    public function __construct($element)
+    public function __construct($element = null)
     {
-        $this->box = new Box($element->box);
+        $this->box = new Box($element?->box);
         $this->pen = new Pen($element?->graphicElement?->pen);
 
-        $this->imageExpression = $element->imageExpression;
+        $this->imageExpression = $element?->imageExpression;
         $this->scaleImage = (string) $element['scaleImage'] ?: $this->scaleImage;
 
         $hAlign = (string) $element["hAlign"] ?: 'Left';

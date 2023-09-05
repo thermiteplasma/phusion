@@ -11,7 +11,7 @@ class Rectangle extends ReportElement {
 
     public int $radius = 0;
 
-    public function __construct($element)
+    public function __construct($element = null)
     {
         parent::__construct($element);
 
