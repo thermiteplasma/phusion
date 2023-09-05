@@ -230,7 +230,7 @@ class Report
 
 
     public function __construct() {
-        
+        dd(1);
         $template = $this->getTemplate();
         if (!$template) {
             throw new Exception("Template not set!!");
