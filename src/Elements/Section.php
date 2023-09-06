@@ -39,9 +39,9 @@ class Section
         return $this;
     }
 
-    public function splitType(SplitType | string $splitType): static
+    public function splitType(SplitType $splitType): static
     {
-        $this->splitType = SplitType::tryFrom($splitType);
+        $this->splitType = $splitType;
         return $this;
     }
 

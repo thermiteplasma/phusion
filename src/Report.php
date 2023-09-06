@@ -254,6 +254,10 @@ class Report
             $this->columnHeader = $this->columnHeader();
         }
 
+        if (count($this->details) == 0) {
+            $this->details = $this->details();
+        }
+
         if (!$this->columnFooter) {
             $this->columnFooter = $this->columnFooter();
         }
@@ -392,7 +396,7 @@ class Report
         return null;
     }
 
-    public function detail(): Section | null
+    public function details(): array | null
     {
         return null;
     }

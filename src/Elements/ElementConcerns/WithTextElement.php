@@ -17,7 +17,7 @@ Trait WithTextElement
     
     public Font $font;
     
-    //Paragraph Options
+    //Paragraph Options. Prefer BOX padding settings
     public string $lineSpacing = 'Single';
     public float $lineSpacingSize = 1.0;
     public int $firstLineIndex = 0;
