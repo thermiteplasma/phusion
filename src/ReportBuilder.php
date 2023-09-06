@@ -508,7 +508,7 @@ class ReportBuilder
         //     $height = $fontsize * $this->adjust;
         // }
 
-        $lineHeightRatio = $staticText->paragraph->getLineHeightRatio();
+        $lineHeightRatio = $staticText->getLineHeightRatio();
 
         $this->pdf->setCellHeightRatio($lineHeightRatio);
         
@@ -642,7 +642,7 @@ class ReportBuilder
         //     $height = $fontsize * $this->adjust;
         // }
 
-        $lineHeightRatio = $textField->paragraph->getLineHeightRatio();
+        $lineHeightRatio = $textField->getLineHeightRatio();
 
         $this->pdf->setCellHeightRatio($lineHeightRatio);
 
@@ -824,7 +824,7 @@ class ReportBuilder
                 
                 foreach($column->detailCell->components as $child) {
                     //get line spacing
-                    $lineHeightRatio = $child->paragraph->getLineHeightRatio();
+                    $lineHeightRatio = $child->getLineHeightRatio();
                     
                     $font = $child->font;
                     $this->pdf->setFont($font->name, $font->getFontStyleString(), $font->size);
