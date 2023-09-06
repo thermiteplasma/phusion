@@ -237,6 +237,10 @@ class Report
             $this->initFromTemplate();
         }
 
+        if (count($this->styles) == 0) {
+            $this->styles = $this->styles();
+        }
+
         $this->setup();
 
         if (!$this->background) {
@@ -372,50 +376,86 @@ class Report
         return new Dataset([]);
     }
 
+    /**
+     * Get the report details sections
+     * 
+     * @return Style[] | null
+     */
+    public function styles(): array | null
+    {
+        return [];
+    }
+
+    /**
+     * Get the report background section
+     * 
+     * @return Section | null
+     */
     public function background(): Section | null
     {
         return null;
     }
 
+    /**
+     * Get the report title section
+     * 
+     * @return Section | null
+     */
     public function title(): Section | null
     {
         return null;
     }
 
+    /**
+     * Get the report page header section
+     * 
+     * @return Section | null
+     */
     public function pageHeader(): Section | null
     {
         return null;
     }
 
+    /**
+     * Get the report column header section
+     * 
+     * @return Section | null
+     */
     public function columnHeader(): Section | null
     {
         return null;
     }
 
-    public function groupHeader(): Section | null
-    {
-        return null;
-    }
-
+    /**
+     * Get the report details sections
+     * 
+     * @return Section[] | null
+     */
     public function details(): array | null
     {
         return [];
     }
 
-    public function groupFooter(): Section | null
-    {
-        return null;
-    }
-
+    /**
+     * Get the report column footer section
+     * 
+     * @return Section | null
+     */
     public function columnFooter(): Section | null
     {
         return null;
     }
 
+    /**
+     * Get the report page footer section
+     * 
+     * @return Section | null
+     */
     public function pageFooter(): Section | null
     {
         return null;
     }
+
     /**
      * Get the page format.
      * 
@@ -431,11 +471,4 @@ class Report
 
         return $format;
     }
-
-    protected function pageHeight(int $pageHeight): static
-    {
-        $this->pageHeight = $pageHeight;
-        return $this;
-    }
-
 }

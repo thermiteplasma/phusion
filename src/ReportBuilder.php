@@ -183,7 +183,7 @@ class ReportBuilder
     {
         if ($this->report->columnHeader) {
             if ($this->report->columnHeader->splitType == SplitType::STRETCH || $this->report->columnHeader->splitType == SplitType::PREVENT) {
-                $this->PreventY_axis($this->report->columnHeader->height);
+                $this->preventYAxis($this->report->columnHeader->height);
             }
             
             $this->generateSectionElements($this->report->columnHeader);
@@ -193,17 +193,17 @@ class ReportBuilder
 
     private function drawGroupHeaders()
     {
+        
         if ($this->report->mainDataset->groups) {
+            
             foreach($this->report->mainDataset->groups as $groupName => $group) {
                 
-                $groupResult = $group->groupExpression->call($this, $this->rowData());
+                $groupResult = $group->groupExpression->call($this, $this->rowData(), $this->variables);
                 
                 $currentGroupValue = $this->groups[$groupName]['value'] ?? null;
                 
-                // ray('GROUP ' . $groupName, $groupResult, $currentGroup);
-
                 if ($groupResult != $currentGroupValue) {
-
+                    
                     if ($this->groups[$groupName]['count'] == 0) {
                         $this->groups[$groupName]['is_first'] = true;
                     } else {
@@ -216,9 +216,9 @@ class ReportBuilder
                     $this->variables[$groupName . '_COUNT'] = $this->groups[$groupName]['count'] + 1;
                     
                     foreach($group->headers as $header) {
-                        
+                        // dd($header);
                         if ($header->splitType == SplitType::STRETCH || $header->splitType == SplitType::PREVENT) {
-                            $this->PreventY_axis($header->height);
+                            $this->preventYAxis($header->height);
                         }
     
                         $this->generateSectionElements($header);
@@ -227,7 +227,7 @@ class ReportBuilder
                     }
 
                 } else {
-                    ray('INCREMENT GROUP COUNT1', $this->groups);
+                    // ray('INCREMENT GROUP COUNT1', $this->groups);
                     $this->groups[$groupName]['is_first'] = false;
                 }
 
@@ -269,7 +269,7 @@ class ReportBuilder
                     //specific row
 
                     if ($detail->splitType == SplitType::STRETCH || $detail->splitType == SplitType::PREVENT) {
-                        $this->PreventY_axis($detail->height);
+                        $this->preventYAxis($detail->height);
                     }
 
                     if (!$variablesCalculated) {
@@ -289,7 +289,7 @@ class ReportBuilder
                     }
                 }
 
-                ray('RI ' . $this->rowIndex . ' ' . count($this->report->mainDataset->data));
+                // ray('RI ' . $this->rowIndex . ' ' . count($this->report->mainDataset->data));
                 
                 $this->drawGroupFooters();
 
@@ -310,23 +310,21 @@ class ReportBuilder
 
     private function rowData()
     {
-        // ray('get row data for ' . $this->rowIndex);
         return $this->report->mainDataset->data[$this->rowIndex];
     }
 
     private function drawGroupFooters()
     {
         //how do we know we are at he ned of a group?
-        // ray('draw group footers');
         if ($this->report->mainDataset->groups) {
-            // ray('groups');
+            
             foreach(array_reverse($this->report->mainDataset->groups) as $groupName => $group) {
                 
-                $groupResult = $group->groupExpression->call($this, $this->rowData());
+                $groupResult = $group->groupExpression->call($this, $this->rowData(), $this->variables);
                 
                 $currentGroup = $this->groups[$groupName]['value'] ?? null;
 
-                ray('group', $groupName, $groupResult, $currentGroup, $this->variables['REPORT_COUNT'], count($this->report->mainDataset->data));
+                // ray('group', $groupName, $groupResult, $currentGroup, $this->variables['REPORT_COUNT'], count($this->report->mainDataset->data));
 
                 //how do we know we are at the end of a group if there is only one?
 
@@ -336,12 +334,12 @@ class ReportBuilder
                     foreach($group->footers as $footer) {
                         
                         if ($footer->splitType == SplitType::STRETCH || $footer->splitType == SplitType::PREVENT) {
-                            $this->PreventY_axis($footer->height);
+                            $this->preventYAxis($footer->height);
                         }
                         
-                        ray('DRAW GROUP FOOTER');
+                        // ray('DRAW GROUP FOOTER');
                         $this->generateSectionElements($footer);
-                        ray('END DRAW GROUP FOOTER');
+                        // ray('END DRAW GROUP FOOTER');
 
                         $this->setYAxis($footer->height);
 
@@ -360,7 +358,7 @@ class ReportBuilder
                 // foreach($group->footers as $footer) {
                     
                 //     if ($footer->splitType == SplitType::STRETCH || $footer->splitType == SplitType::PREVENT) {
-                //         $this->PreventY_axis($footer->height);
+                //         $this->preventYAxis($footer->height);
                 //     }
                     
                 //     $this->generateSectionElements($footer);
@@ -375,7 +373,7 @@ class ReportBuilder
     {
         if ($this->report->columnFooter) {
             if ($this->report->columnFooter->splitType == SplitType::STRETCH || $this->report->columnFooter->splitType == SplitType::PREVENT) {
-                $this->PreventY_axis($this->report->columnFooter->height);
+                $this->preventYAxis($this->report->columnFooter->height);
             }
             
             $this->generateSectionElements($this->report->columnFooter);
@@ -470,7 +468,6 @@ class ReportBuilder
 
     public function drawStaticText(StaticText $staticText, $attributes = [])
     {
-        ray('draw static text', $staticText);
         $textColor = $staticText->foreColor;
         $fillColor = $staticText->backColor;
 
@@ -589,7 +586,7 @@ class ReportBuilder
             }
 
             $border = $staticText->box->getBorders();
-            ray('MULTICELL 1');
+            // ray('MULTICELL 1');
             // ray('draw text at 1', $staticText->text, $x, $y, $this->yAxis);
             $this->pdf->MultiCell($w, $h, $staticText->text, $border, $align, $staticText->shouldFill(), 0, $x, $y, true, 0, false, true, $h, $valign);
             // if (isset($arraydata['link']) && !empty($arraydata['link'])) {
@@ -842,7 +839,7 @@ class ReportBuilder
             } //end get height row header and detail
 
             //check new page
-            $this->PreventY_axis($detailHeight);
+            $this->preventYAxis($detailHeight);
             
             //new page?
             if ($this->currentTablePage != $this->currentPage) {
@@ -961,7 +958,7 @@ class ReportBuilder
         //check new page
         if ($columnFooterHeight > 0) {
             //check new page
-            $this->PreventY_axis($columnFooterHeight);
+            $this->preventYAxis($columnFooterHeight);
 
             //new page?
             if ($this->currentTablePage != $this->currentPage) {
@@ -1009,7 +1006,7 @@ class ReportBuilder
         //check new page
         if ($tableFooterHeight > 0) {
             //check new page
-            $this->PreventY_axis($tableFooterHeight);
+            $this->preventYAxis($tableFooterHeight);
             
             //new page?
             if ($this->currentTablePage != $this->currentPage) {
@@ -1063,7 +1060,7 @@ class ReportBuilder
         }
     }
 
-    public function PreventY_axis($y)
+    public function preventYAxis($y)
     {
         $preventY_axis = $this->yAxis + $y;
 
@@ -1092,7 +1089,7 @@ class ReportBuilder
     private function hey($expression)
     {
         if ($expression instanceof Closure) {
-            return $expression->call($this, $this->rowData());
+            return $expression->call($this, $this->rowData(), $this->variables);
         } else {
             $var = $this->variables;
             $rowData = $this->rowData();
@@ -1177,7 +1174,7 @@ class ReportBuilder
         
         $currentValue = $this->variables[$name] ?? null;
         
-        $result = $variable->variableExpression->call($this, $this->rowData());
+        $result = $variable->variableExpression->call($this, $this->rowData(), $this->variables);
         
         $value = $result;
         

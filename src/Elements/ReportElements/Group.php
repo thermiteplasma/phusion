@@ -15,10 +15,16 @@ class Group
 
     public Closure $groupExpression;
 
-    public function __construct($name, $groupExpression) {
-        $this->name = $name;
-        $this->groupExpression = $groupExpression;
+    public static function make(): static
+    {
+        $static = app(static::class);
+        return $static;
     }
+
+    // public function __construct($name, $groupExpression) {
+    //     $this->name = $name;
+    //     $this->groupExpression = $groupExpression;
+    // }
 
     public function setup($element) {
         if (isset($element->groupHeader)) {
@@ -32,5 +38,41 @@ class Group
                 $this->footers[] = new Section($child);
             }
         }
+    }
+
+    public function name(string $name): static
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    public function groupExpression(Closure $groupExpression): static
+    {
+        $this->groupExpression = $groupExpression;
+        return $this;
+    }
+
+    public function addHeader(Section $section): static
+    {
+        $this->headers[] = $section;
+        return $this;
+    }
+
+    public function addFooter(Section $section): static
+    {
+        $this->footers[] = $section;
+        return $this;
+    }
+
+    public function headers(array $headers): static
+    {
+        $this->headers = $headers;
+        return $this;
+    }
+
+    public function footers(array $footers): static
+    {
+        $this->footers = $footers;
+        return $this;
     }
 }
