@@ -446,7 +446,7 @@ class ReportBuilder
     {
         $linewidth = $line->pen->lineWidth ?? 0;
 
-        $dash = $line->pen->dash();
+        $dash = $line->pen->lineStyle->tcpdfValue();
 
         $drawcolor = $line->foreColor->toArray();
 
