@@ -427,4 +427,10 @@ class Report
         return $format;
     }
 
+    protected function pageHeight(int $pageHeight): static
+    {
+        $this->pageHeight = $pageHeight;
+        return $this;
+    }
+
 }
