@@ -55,15 +55,15 @@ Trait WithTextElement
         return $this->rotation->angle();
     }
 
-    public function textAlignment(HorizontalAlignment | string $textAlignment): static
+    public function textAlignment(HorizontalAlignment $textAlignment): static
     {
-        $this->textAlignment = HorizontalAlignment::tryFrom($textAlignment);
+        $this->textAlignment = $textAlignment;
         return $this;
     }
 
-    public function verticalAlignment(VerticalAlignment | string $verticalAlignment): static
+    public function verticalAlignment(VerticalAlignment $verticalAlignment): static
     {
-        $this->verticalAlignment = VerticalAlignment::tryFrom($verticalAlignment);
+        $this->verticalAlignment = $verticalAlignment;
         return $this;
     }
 
