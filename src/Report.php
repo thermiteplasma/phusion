@@ -236,7 +236,36 @@ class Report
             return;
         }
 
-        $this->pageHeader = $this->pageHeader();
+        $this->setup();
+
+        if (!$this->background) {
+            $this->background = $this->background();
+        }
+
+        if (!$this->title) {
+            $this->title = $this->title();
+        }
+
+        if (!$this->pageHeader) {
+            $this->pageHeader = $this->pageHeader();
+        }
+
+        if (!$this->columnHeader) {
+            $this->columnHeader = $this->columnHeader();
+        }
+
+        if (!$this->columnFooter) {
+            $this->columnFooter = $this->columnFooter();
+        }
+
+        if (!$this->pageFooter) {
+            $this->pageFooter = $this->pageFooter();
+        }
+    }
+
+    public function setup(): void
+    {
+        return;
     }
 
     public function initFromTemplate() {
@@ -333,25 +362,55 @@ class Report
         ray('REPORT', $this);
     }
 
-    public function pageHeader(): Section | null
-    {
-        return null;
-    }
-
     public function mainDataset(): Dataset
     {
         return new Dataset([]);
     }
 
+    public function background(): Section | null
+    {
+        return null;
+    }
 
-    // public function generate()
-    // {
-    //     $builder = new ReportBuilder($this);
-   
-    //     $path = resource_path('templates/test.pdf');
-    //     $builder->pdf->Output($path, 'FD');
-    // }
+    public function title(): Section | null
+    {
+        return null;
+    }
 
+    public function pageHeader(): Section | null
+    {
+        return null;
+    }
+
+    public function columnHeader(): Section | null
+    {
+        return null;
+    }
+
+    public function groupHeader(): Section | null
+    {
+        return null;
+    }
+
+    public function detail(): Section | null
+    {
+        return null;
+    }
+
+    public function groupFooter(): Section | null
+    {
+        return null;
+    }
+
+    public function columnFooter(): Section | null
+    {
+        return null;
+    }
+
+    public function pageFooter(): Section | null
+    {
+        return null;
+    }
     /**
      * Get the page format.
      * 
