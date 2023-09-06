@@ -3,6 +3,7 @@
 namespace Thermiteplasma\Phusion;
 
 use Exception;
+use Thermiteplasma\Phusion\Contracts\Templateable;
 use Thermiteplasma\Phusion\Elements\Style;
 use Thermiteplasma\Phusion\Dataset\Dataset;
 use Thermiteplasma\Phusion\Elements\Section;
@@ -228,10 +229,19 @@ class Report
         return $this->template;
     }
 
-
     public function __construct() {
-        dd(1);
-        $template = $this->getTemplate();
+        
+        if ($this instanceof Templateable) {
+            $this->initFromTemplate();
+            return;
+        }
+
+        $this->pageHeader = $this->pageHeader();
+    }
+
+    public function initFromTemplate() {
+        
+        $template = $this->template();
         if (!$template) {
             throw new Exception("Template not set!!");
         }
@@ -323,6 +333,10 @@ class Report
         ray('REPORT', $this);
     }
 
+    public function pageHeader(): Section | null
+    {
+        return null;
+    }
 
     public function mainDataset(): Dataset
     {
