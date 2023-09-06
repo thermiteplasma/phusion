@@ -2,6 +2,7 @@
 
 namespace Thermiteplasma\Phusion;
 
+use Closure;
 use Illuminate\Support\Facades\Blade;
 use TCPDF;
 use Thermiteplasma\Phusion\Dataset\Field;
@@ -469,7 +470,7 @@ class ReportBuilder
 
     public function drawStaticText(StaticText $staticText, $attributes = [])
     {
-        
+        ray('draw static text', $staticText);
         $textColor = $staticText->foreColor;
         $fillColor = $staticText->backColor;
 
@@ -571,6 +572,7 @@ class ReportBuilder
             }
         }
 
+        
         if ($printOverflow || $stretchOverflow) {
             $x = $this->pdf->GetX();
             $yAfter = $this->pdf->GetY();
@@ -587,6 +589,7 @@ class ReportBuilder
             }
 
             $border = $staticText->box->getBorders();
+            ray('MULTICELL 1');
             // ray('draw text at 1', $staticText->text, $x, $y, $this->yAxis);
             $this->pdf->MultiCell($w, $h, $staticText->text, $border, $align, $staticText->shouldFill(), 0, $x, $y, true, 0, false, true, $h, $valign);
             // if (isset($arraydata['link']) && !empty($arraydata['link'])) {
@@ -599,6 +602,7 @@ class ReportBuilder
             }
 
             $this->pdf->MultiCell($w, $h, $staticText->text, $staticText->box->getBorders(), $align, $staticText->shouldFill(), 0, $x, $y, true, 0, false, true, $h, $valign);
+            
             // if (isset($arraydata['link']) && !empty($arraydata['link'])) {
             //     $pdf->Link($x, $y, $arraydata['width'], $arraydata['height'], $arraydata['link']);
             // }
@@ -1087,9 +1091,13 @@ class ReportBuilder
 
     private function hey($expression)
     {
-        $var = $this->variables;
-        $rowData = $this->rowData();
-        return eval("return $expression;");
+        if ($expression instanceof Closure) {
+            return $expression->call($this, $this->rowData());
+        } else {
+            $var = $this->variables;
+            $rowData = $this->rowData();
+            return eval("return $expression;");
+        }
     }
     
     // public function getExpression($text, $row, $writeHTML = null, $element = null) {

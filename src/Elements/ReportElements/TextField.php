@@ -2,17 +2,18 @@
 
 namespace Thermiteplasma\Phusion\Elements\ReportElements;
 
+use Closure;
 use Thermiteplasma\Phusion\Elements\Box;
+use Thermiteplasma\Phusion\Enums\TextAdjust;
 use Thermiteplasma\Phusion\Elements\ElementConcerns\WithBox;
 use Thermiteplasma\Phusion\Elements\ElementConcerns\WithTextElement;
-use Thermiteplasma\Phusion\Enums\TextAdjust;
 
 class TextField extends ReportElement
 {
     use WithBox;
     use WithTextElement;
     
-    public string $textFieldExpression;
+    public string | Closure $textFieldExpression;
 
     public bool $isBlankWhenNull = true;
     
@@ -46,7 +47,7 @@ class TextField extends ReportElement
         return $this;
     }
 
-    public function textFieldExpression(string $textFieldExpression): static
+    public function textFieldExpression(string | Closure $textFieldExpression): static
     {
         $this->textFieldExpression = $textFieldExpression;
         return $this;

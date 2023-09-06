@@ -230,10 +230,11 @@ class Report
     }
 
     public function __construct() {
-        
+    
+        $this->mainDataset = $this->mainDataset();
+
         if ($this instanceof Templateable) {
             $this->initFromTemplate();
-            return;
         }
 
         $this->setup();
@@ -265,6 +266,8 @@ class Report
         if (!$this->pageFooter) {
             $this->pageFooter = $this->pageFooter();
         }
+
+        ray($this);
     }
 
     public function setup(): void
@@ -316,8 +319,6 @@ class Report
         $this->isSummaryWithPageHeaderAndFooter = (bool) $jrxml["isSummaryWithPageHeaderAndFooter"];
         $this->isFloatColumnFooter = (bool) $jrxml["isFloatColumnFooter"];
         $this->isIgnorePagination = (bool) $jrxml["isIgnorePagination"];
-
-        $this->mainDataset = $this->mainDataset();
 
         foreach ($jrxml as $reportObject => $value) {
             
@@ -398,7 +399,7 @@ class Report
 
     public function details(): array | null
     {
-        return null;
+        return [];
     }
 
     public function groupFooter(): Section | null

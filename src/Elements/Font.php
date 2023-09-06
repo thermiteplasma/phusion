@@ -4,7 +4,7 @@ namespace Thermiteplasma\Phusion\Elements;
 
 class Font
 {
-    public int $size = 15;
+    public int $size = 8;
     public bool $isBold = false;
     public bool $isItalic = false;
     public bool $isUnderline = false;
