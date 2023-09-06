@@ -110,7 +110,7 @@ class ReportBuilder
 
     public function generateSectionElements(Section $section, $data = [])
     {
-        foreach ($section->children as $element) {
+        foreach ($section->components as $element) {
             if ($element instanceof Rectangle) {
                 $this->drawRectangle($element);
             }
@@ -801,11 +801,11 @@ class ReportBuilder
                     $columnHeaderHeight = $column->columnHeader->height;
                 }
                 //get max height
-                if (count($column->columnHeader->children) > 0) {
+                if (count($column->columnHeader->components) > 0) {
                     
                     //children can only be staticText
 
-                    foreach ($column->columnHeader->children as $child) {
+                    foreach ($column->columnHeader->components as $child) {
                         $font = $child->font;
                         $this->pdf->setFont($font->name, $font->getFontStyleString(), $font->size);
                         
@@ -822,7 +822,7 @@ class ReportBuilder
                     $detailHeight = $column->detailCell->height;
                 }
                 
-                foreach($column->detailCell->children as $child) {
+                foreach($column->detailCell->components as $child) {
                     //get line spacing
                     $lineHeightRatio = $child->paragraph->getLineHeightRatio();
                     
@@ -868,7 +868,7 @@ class ReportBuilder
 
                     $this->pdf->RoundedRect(x: $x, y: $y, w: $column->width, h: $column->tableHeader->height, r: 0, round_corner: '1111', style: 'FD', border_style: ['all' => $style->box->getBorders()], fill_color: $style->backColor->toArray());
 
-                    foreach($column->tableHeader->children as $child) {
+                    foreach($column->tableHeader->components as $child) {
                         if ($child instanceof StaticText) {
                             //we need to override the positioning of the static text
                             $attributes = ['x' => $x, 'height' => $column->tableHeader->height];
@@ -900,7 +900,7 @@ class ReportBuilder
 
                     $this->pdf->RoundedRect(x: $x, y: $y, w: $column->width, h: $column->columnHeader->height, r: 0, round_corner: '1111', style: 'FD', border_style: ['all' => $style->box->getBorders()], fill_color: $style->backColor->toArray());
 
-                    foreach ($column->columnHeader->children as $child) {
+                    foreach ($column->columnHeader->components as $child) {
                         if ($child instanceof StaticText) {
                             $attributes = [
                                 'x' => $x,
@@ -932,7 +932,7 @@ class ReportBuilder
                 
                 $this->pdf->RoundedRect(x: $x, y: $y, w: $column->width, h: $detailHeight, r: 0, round_corner: '1111', style: 'FD', border_style: ['all' => $style->box->getBorders()], fill_color: $style->backColor->toArray());
 
-                foreach ($column->detailCell->children as $child) {
+                foreach ($column->detailCell->components as $child) {
                     if ($child instanceof StaticText) {
                         
                         $attributes = ['x' => $x, 'height' => $column->detailCell->height];
@@ -975,7 +975,7 @@ class ReportBuilder
                 
                 $this->pdf->RoundedRect(x: $x, y: $y, w: $column->width, h: $columnFooterHeight, r: 0, round_corner: '1111', style: 'FD', border_style: ['all' => $style->box->getBorders()], fill_color: $style->backColor->toArray());
 
-                foreach ($column->columnFooter->children as $child) {
+                foreach ($column->columnFooter->components as $child) {
                     if ($child instanceof StaticText) {
                         $attributes = [
                             'x' => $x,
@@ -1024,7 +1024,7 @@ class ReportBuilder
 
                 $this->pdf->RoundedRect(x: $x, y: $y, w: $column->width, h: $tableFooterHeight, r: 0, round_corner: '1111', style: 'FD', border_style: ['all' => $style->box->getBorders()], fill_color: $style->backColor->toArray());
 
-                foreach ($column->tableFooter->children as $child) {
+                foreach ($column->tableFooter->components as $child) {
                     if ($child instanceof StaticText) {
                         $attributes = [
                             'x' => $x,
